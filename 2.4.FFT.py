@@ -1,3 +1,4 @@
+'''Используется FFT для удаления низкочастотных компонент, зачем обратное преобразование фурье, средний уровень смещается к нулю'''
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.fftpack import fft, ifft, fftfreq, rfft, rfftfreq, irfft
