@@ -1,0 +1,30 @@
+'''Импорт данных с датчика в файлы расширения numpy,
+в процессе данные разбиваются на несколько небольших файлов
+для ускорения процесса, чтобы не создавать слишком большие массивы, занимающие
+много места в текущем объеме памяти
+результат - одномерные массивы из 5 тысяч элементов. '''
+import numpy as np
+
+date = np.array([])
+time = np.array([])
+Pressure = np.arange(0, dtype=float)
+AtmPressure = np.arange(0, dtype=float)
+counter = 0
+
+with open('Data TXT/Svobodniy_2014_2015+.txt', 'r') as file1:
+    for line in file1:
+        date = np.append(date, line.strip().split()[0])
+        time = np.append(time, line.strip().split()[1])
+        Pressure = np.append(Pressure, line.strip().split()[2])
+        AtmPressure = np.append(AtmPressure, line.strip().split()[3])
+        if len(Pressure) > 5000:
+            np.save('Data/Date' + str(counter) + '.npy', date)
+            np.save('Data/Time' + str(counter) + '.npy', time)
+            np.save('Data/Pressure' + str(counter) + '.npy', Pressure)
+            np.save('Data/Temperature' + str(counter) + '.npy', AtmPressure)
+            date = np.array([])
+            time = np.array([])
+            Pressure = np.arange(0, dtype=float)
+            AtmPressure = np.arange(0, dtype=float)
+            print(counter)
+            counter = counter + 1
