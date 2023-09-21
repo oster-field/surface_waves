@@ -1,3 +1,4 @@
+'''Сплайн-интерполяция, фактически, дополнение частотного фурье-спектра в правой части для уменьшения интервала дискретизации'''
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.interpolate import CubicSpline
