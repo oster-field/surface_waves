@@ -1,0 +1,78 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import random
+from PyAstronomy import pyaC
+import scipy.stats as ss
+from scipy.stats import kurtosis, skew
+
+alfa = 0.000070223
+betta = 0.74
+Hs = 3.08
+g = 9.80665
+U = np.sqrt(Hs*g/0.2)
+WDT = 40
+N = 2**13
+dt = 2*np.pi/WDT
+dw = WDT/N
+L = dt*N
+g = 9.80665
+print('dk = ' + str(dw))
+print('dx = ' + str(dt))
+print('L = ' + str(L))
+x = np.arange(0, L, dt, dtype=np.float64)
+for counter in range(30000, 30001):
+    y = 0
+    w = 0
+    SkG = np.arange(0)
+    Sp = np.arange(0)
+    Der = np.arange(0)
+    for i in range(0, N):
+        w = w + dw
+        v = random.uniform(0, 2*np.pi)
+        S = alfa * g * g * (1/(w*w*w*w*w)) * np.exp((-betta*(g**4))/((U**4)*(w**4)))
+        MonochromaticWave = (np.sqrt(2*dw*S))*(np.cos(w*x+v))
+        y = y + MonochromaticWave
+        SkG = np.append(SkG, skew(y))
+        Sp = np.append(Sp, S)
+        Der = np.append(Der, np.abs(MonochromaticWave[0] - MonochromaticWave[len(MonochromaticWave) - 1]))
+    np.save('S(w)PM/etta ' + str(counter), y)
+    xS = np.arange(0, len(SkG), 1)
+    XSp = np.arange(0, len(Sp), 1)
+    xDer = np.arange(0, len(Der), 1)
+    plt.plot(xS*dw, SkG, XSp*dw, Sp, xDer*dw, Der)
+    plt.show()
+    q = np.arange(0)
+    ymax = np.arange(0)
+    ymin = np.arange(0)
+    ym = 0
+    yl = 0
+    n = 0
+
+    xc, xi = pyaC.zerocross1d(x, y, getIndices=True)
+    xnew = np.sort(np.append(x, xc))
+    for i in range(1, len(xnew+1)):
+        if (xnew[i] in xc):
+            xzm1 = np.where(xnew == xnew[i-1])[0]
+            yzm1 = np.where(y == y[xzm1])[0]
+            y = np.insert(y, yzm1 + 1, [0])
+    q = np.arange(0)
+    for j in y:
+        if j == 0:
+            if q[len(q)-1] > 0:
+                ymax = np.append(ymax, np.max(q))
+            else:
+                ymin = np.append(ymin, np.min(q))
+            q = np.arange(0)
+        q = np.append(q, j)
+    np.save('S(w)PM/plus amplitudes ' + str(counter), ymax)
+    np.save('S(w)PM/minus amplitudes ' + str(counter), ymin)
+    #Создание массива содержащего высоты волн
+    wavelenght = np.arange(0)
+    if len(ymax)>=len(ymin):
+        for i in range(0, len(ymin)):
+            wavelenght = np.append(wavelenght, [ymax[i] + abs(ymin[i])])
+    if len(ymax)<len(ymin):
+        for i in range(0, len(ymax)):
+            wavelenght = np.append(wavelenght, [ymax[i] + abs(ymin[i])])
+    np.save('S(w)PM/lenghts ' + str(counter), wavelenght)
+#S = (alfa / (2 * w ** 3)) * np.exp((-betta * (g ** 2)) / ((U ** 4) * (w ** 2))) - спектр по волновым числам
