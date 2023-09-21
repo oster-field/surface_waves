@@ -1,3 +1,4 @@
+'''Аналогичным со случаем численной модели образом выделяются индивидуальные волны в натурных данных'''
 import numpy as np
 import matplotlib.pyplot as plt
 from PyAstronomy import pyaC
