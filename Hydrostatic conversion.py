@@ -1,3 +1,4 @@
+'''Программа для гидростатического пересчета, переход от паскалей к метрам'''
 import numpy as np
 import matplotlib.pyplot as plt
 
