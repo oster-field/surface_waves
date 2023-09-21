@@ -1,3 +1,4 @@
+'''Построение графика по обработанным данным с датчика'''
 import numpy as np
 import matplotlib.pyplot as plt
 
